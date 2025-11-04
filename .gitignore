@@ -1,0 +1,33 @@
+# Ignore build output directory
+/build/
+
+# CMake generated files (if created outside build/)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Compiled object files, libraries, executables
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.exe
+
+# Logs and pid files
+*.log
+/tmp/*.pid
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor and OS metadata
+.DS_Store
+.vscode/
+.idea/
+
+# PlantUML generated images
+*.png
+*.svg

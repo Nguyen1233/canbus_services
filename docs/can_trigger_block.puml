@@ -1,0 +1,30 @@
+@startuml can_trigger_block
+' Clear block diagram: TriggerData -> D-Bus -> CANListener -> CAN bus
+skinparam componentStyle rectangle
+left to right direction
+
+component "TriggerData\n(service / producer)" as Trigger
+component "D-Bus\n(session/system)" as DBus
+component "CANListener\n(service / consumer)" as CAN
+database "Linux CAN Bus\n(can0 / vcan0)" as CANBUS
+
+' Labeled flows
+Trigger --> DBus : SendCANMessage(canId, data)
+DBus --> CAN : Deliver method call
+CAN --> CANBUS : Write CAN frame (inject)
+CANBUS --> CAN : Receive frames / loopback
+CAN --> DBus : Emit CANMessageReceived signal
+DBus --> Trigger : Signal delivered to subscribers
+
+' Short annotations
+note left of Trigger
+  - Prepares 2-byte payload: [warning, distance]
+  - May debounce or throttle messages
+end note
+
+note right of CAN
+  - Injects/reads frames on CAN interface
+  - Returns success/failure to caller
+end note
+
+@enduml

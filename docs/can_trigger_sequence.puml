@@ -1,0 +1,31 @@
+@startuml can_trigger_sequence
+title TriggerData -> CANListener D-Bus sequence
+
+actor TriggerData
+participant "D-Bus daemon\n(session/system)" as DBus
+participant "CANListener Service" as CANListener
+participant "Linux CAN Bus\n(can0 / vcan0)" as CANBus
+
+== Sending a CAN message from TriggerData ==
+TriggerData -> DBus : SendCANMessage(canId, array<byte> data)
+DBus -> CANListener : Deliver method call
+activate CANListener
+CANListener -> CANBus : write frame (canId, data)
+note right of CANBus
+  Frame appears on CAN interface (vcan0/can0)
+end note
+CANListener --> DBus : Return bool (success/failure)
+DBus --> TriggerData : Return result
+
+== Emitting signal after injection ==
+CANListener -> DBus : Emit CANMessageSent(canId, data, timestamp)
+DBus -> TriggerData : (if subscribed) CANMessageSent signal delivered
+deactivate CANListener
+
+== Optional: other flows ==
+note over TriggerData,CANListener
+  - TriggerData may throttle or debounce messages
+  - Use session or system bus depending on deployment
+end note
+
+@enduml
