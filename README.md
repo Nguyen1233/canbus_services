@@ -112,7 +112,7 @@ dbus-send --session --print-reply --dest=org.example.DMS.CAN \
 ```bash
 gdbus monitor --session --dest org.example.DMS.CAN --object-path /org/example/DMS/CANListener
 # Or
-dbus-monitor --session "type='signal',sender='org.example.DMS.CAN',interface='org.example.DMS.CAN'"
+dbus-monitor --session "type='method_call',interface='org.example.DMS.CAN'"
 # You will see CANMessageReceived signals with the canId and data
 ```
 
